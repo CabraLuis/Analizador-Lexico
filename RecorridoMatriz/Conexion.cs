@@ -12,7 +12,7 @@ namespace RecorridoMatriz
     {
         public static SqlConnection Conectar()
         {
-            SqlConnection cn = new SqlConnection("Persist Security Info=False;Integrated Security=true;Initial Catalog = matrizTransicion; Server = DESKTOP-1AP4FIU");
+            SqlConnection cn = new SqlConnection("Persist Security Info=False;Integrated Security=true;Initial Catalog = matrizTransicion; Server = localhost");
             cn.Open();
             return cn;
         }

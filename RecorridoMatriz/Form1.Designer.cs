@@ -48,8 +48,6 @@ namespace RecorridoMatriz
             this.dtgTablaDeSimbolos = new System.Windows.Forms.DataGridView();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.rtxbLineasCodigo = new System.Windows.Forms.RichTextBox();
             this.rtxbLineasTokens = new System.Windows.Forms.RichTextBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -215,13 +213,10 @@ namespace RecorridoMatriz
             dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dtgTablaDeSimbolos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
-            this.dtgTablaDeSimbolos.ColumnHeadersHeight = 30;
-            this.dtgTablaDeSimbolos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dtgTablaDeSimbolos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dtgTablaDeSimbolos.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column1,
-            this.Column2,
-            this.Column3,
-            this.Column4});
+            this.Column2});
             dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle6.BackColor = System.Drawing.Color.DimGray;
             dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -257,7 +252,7 @@ namespace RecorridoMatriz
             this.Column1.MinimumWidth = 9;
             this.Column1.Name = "Column1";
             this.Column1.ReadOnly = true;
-            this.Column1.Width = 90;
+            this.Column1.Width = 98;
             // 
             // Column2
             // 
@@ -266,22 +261,6 @@ namespace RecorridoMatriz
             this.Column2.Name = "Column2";
             this.Column2.ReadOnly = true;
             this.Column2.Width = 67;
-            // 
-            // Column3
-            // 
-            this.Column3.HeaderText = "Tipo de dato";
-            this.Column3.MinimumWidth = 9;
-            this.Column3.Name = "Column3";
-            this.Column3.ReadOnly = true;
-            this.Column3.Width = 83;
-            // 
-            // Column4
-            // 
-            this.Column4.HeaderText = "Valor";
-            this.Column4.MinimumWidth = 9;
-            this.Column4.Name = "Column4";
-            this.Column4.ReadOnly = true;
-            this.Column4.Width = 54;
             // 
             // rtxbLineasCodigo
             // 
@@ -526,10 +505,6 @@ namespace RecorridoMatriz
         private System.Windows.Forms.RichTextBox rtxbNombreError;
         private System.Windows.Forms.RichTextBox rtxbNumError;
         private System.Windows.Forms.DataGridView dtgTablaDeSimbolos;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private System.Windows.Forms.RichTextBox rtxbLineasCodigo;
         private System.Windows.Forms.RichTextBox rtxbLineasTokens;
         private System.Windows.Forms.Label label4;
@@ -543,6 +518,8 @@ namespace RecorridoMatriz
         private System.Windows.Forms.Label lblTotalErrores;
         private System.Windows.Forms.Label lblNumErrores;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
     }
 }
 

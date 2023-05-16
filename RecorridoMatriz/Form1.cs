@@ -43,8 +43,8 @@ namespace RecorridoMatriz
                 int numLinea;
 
                 // Variable para guardar identificador
-                string strIDEN = "";
-                bool banderaIDEN = false;
+                string strIDV = "";
+                bool banderaIDV = false;
 
                 // Variable para guardar cadenas
                 string strPalabra = "";
@@ -115,7 +115,7 @@ namespace RecorridoMatriz
 
         void AgregarAErrores(string strNota, string strNumero)
         {
-            //nombre de error
+            // Nombre de error
             if (rtxbNombreError.Text == "")
             {
                 rtxbNombreError.Text = strNota;
@@ -127,7 +127,7 @@ namespace RecorridoMatriz
             rtxbNombreError.SelectionStart = rtxbNombreError.Text.Length;
             rtxbNombreError.ScrollToCaret();
 
-            //num de linea
+            // Numero de linea
             if(rtxbNumError.Text == "")
             {
                 rtxbNumError.Text = strNumero;
@@ -148,7 +148,7 @@ namespace RecorridoMatriz
             }
 
             rtxbLineasTokens.Clear();
-            //actualiza los numeros de linea
+            // Actualiza los numeros de linea
             int n = rtxbTokens.Lines.Length;
             for(int i=1; i<=n; i++)
             {
@@ -175,41 +175,40 @@ namespace RecorridoMatriz
             }
         }
 
-        //--Métodos que se usan en el análisis lexico--
-
-        //metodo de lectura de cadena
+        // Analisis lexico
+        // Metodo de lectura de cadena
         void LecturaDeCadena()
         {
-            //empieza recorrido de lineas de codigo
+            // Empieza recorrido de lineas de codigo
             for (numLinea = 0; numLinea < rtxbSentencias.Lines.Length; numLinea++)
             {
-                //brincar si es una linea vacia
+                // Saltar si es una linea vacia
                 if (rtxbSentencias.Lines[numLinea] == "")
                 {
                     continue;
                 }
 
-                //guardamos linea de codigo y le agregamos una "marca/blanco" para el FDC
+                // Guardamos linea de codigo y le agregamos una "marca/blanco" para el FDC
                 strLineaDeCodigo = rtxbSentencias.Lines[numLinea] + " ";
 
-                //se guarda la cadena en el arreglo de caracteres
+                // Se guarda la cadena en el arreglo de caracteres
                 caracteresPorLinea = strLineaDeCodigo.ToCharArray();
 
-                //aseguramos reiniciar valores para recorrer matriz
+                // Reiniciar valores para recorrer matriz
                 int intColumna = 0;
                 intEstadoActual = 0; intEstadoSiguiente = 0;
 
-                //empieza recorrido de caracteres de cada linea de codigo
+                // Empieza recorrido de caracteres de cada linea de codigo
                 foreach (char c in caracteresPorLinea)
                 {
                     intColumna = 0;
-                    //recorrido de alfabeto
+                    // Recorrido de alfabeto
                     RecorrerMatriz(c, ref intColumna);
                 }
             }
         }
 
-        //Metodo para leer la matriz de la base de datos
+        // Metodo para leer la matriz de la base de datos
         public DataTable LlenarDatos()
         {
             Conexion.Conectar();
@@ -238,67 +237,67 @@ namespace RecorridoMatriz
             }
         }
 
-        //metodo de recorrido de matriz
+        // Metodo de recorrido de matriz
         void RecorrerMatriz(char c, ref int intColumna)
         {
-            //recorrido de alfabeto
+            // Recorrido de alfabeto
             foreach (string simbolo in Alfabeto)
             {
-                //si el caracter se encuentra en el alfabeto
+                // Si el caracter se encuentra en el alfabeto
                 if (c.ToString() == simbolo)
                 {
-                    //verificamos si se trata de un IDEN
-                    if (c.ToString() == "_")
+                    // Verificamos si se trata de un IDV
+                    if (char.IsLetter(c))
                     {
-                        //activa bool
-                        banderaIDEN = true;
+                        // Activa bool
+                        banderaIDV = true;
                     }
-                    if (banderaIDEN)
+                    if (banderaIDV)
                     {
-                        //va guardando el nombre del IDEN
-                        strIDEN = strIDEN + c.ToString();
+                        // Va guardando el nombre del IDV
+                        strIDV = strIDV + c.ToString();
                     }
-                    //añadimos caracter para formar palabra
+                    // Añadimos caracter para formar palabra
                     strPalabra = strPalabra + c.ToString();
 
-                    //avanza al estado indicado en la celda
+                    // Avanza al estado indicado en la celda
                     intEstadoSiguiente = int.Parse(_matriz[(intEstadoActual), intColumna]);
                     intEstadoActual = intEstadoSiguiente;
                     break;
                 }
 
-                //si llegamos a FDC
+                // Si llega a FDC
                 if (c.ToString() == " " && simbolo == "FDC")
                 {
-                    //si es un blanco en el estado 0
+                    // Si es un blanco en el estado 0
                     if (intEstadoActual == 0)
                     {
                         strPalabra = "";
                         break;
                     }
-                    //verificar si se trata de un error
+                    // Verificar si se trata de un error
                     if ((_matriz[intEstadoActual, intColumna]).Contains("ERROR"))
                     {
                         ElementosNoValidos(ref intColumna);
                     }
                     else
                     {
-                        //continua normal
+                        // Continua normal
                         strPalabra = "";
                         intEstadoActual = intEstadoSiguiente;
 
                         intColumna++;
                     }
 
-                    //estado de aceptacion
+                    // Estado de aceptacion
 
 
-                    //Se procede a añadir a la lista de TOKENS
+                    // Se procede a añadir a la lista de TOKENS
 
-                    //declaramos un bool para indicar si es un token en nueva linea de codigo
+                    // Declaramos un bool para indicar si es un token en nueva linea de codigo
                     bool bandera = true;
 
-                    //verifica si es de la misma linea de codigo
+                    // Verifica si es de la misma linea de codigo
                     int iteracion = 0;
                     foreach (Token token in listaTokens)
                     {
@@ -315,55 +314,51 @@ namespace RecorridoMatriz
                                 }
                             }
                             
-                            //verificamos si se trata de un identificador
+                            // Verificamos si se trata de un identificador
                             bool yaExiste = false;
                             if (unToken1.NombreTOKEN == "IDV")
                             {
-                                //buscamos en la tabla de simbolos si ya existe un IDEN con el mismo nombre
+                                // Buscamos en la tabla de simbolos si ya existe un IDV con el mismo nombre
                                 BusquedaEnLaTablaDeSimbolos(ref yaExiste);
 
-                                //si ya existe IDEN...
+                                // Si ya existe IDV...
                                 if (yaExiste)
                                 {
-                                    //agregamos al archivo con TOKEN ya existente
+                                    // Agregamos al archivo con TOKEN ya existente
                                     unToken1.NombreTOKEN = unToken1.NombreTOKEN + numIdentificador;
                                 }
-                                //sino, se enumera TOKEN y añadimos IDEN a tabla de simbolos
+                                // Sino, se enumera TOKEN y añadimos IDV a tabla de simbolos
                                 else
                                 {
-                                    int conteoIDEN = 0;
-                                    //buscamos si ya existe algún IDEN para ENUMERARLO
-                                    ConteoDeTablaDeSimbolos(ref conteoIDEN);
-                                    /*if(conteoIDEN == 0)
-                                    {
-                                        conteoIDEN = 1;
-                                    }*/
-                                    conteoIDEN = conteoIDEN + 1;
-                                    unToken1.NombreTOKEN = unToken1.NombreTOKEN + conteoIDEN;
+                                    int conteoIDV = 0;
+                                    // Buscamos si ya existe algún IDV para ENUMERARLO
+                                    ConteoDeTablaDeSimbolos(ref conteoIDV);
+                                    conteoIDV = conteoIDV + 1;
+                                    unToken1.NombreTOKEN = unToken1.NombreTOKEN + conteoIDV;
 
-                                    //añadimos a la tabla de simbolos
+                                    // Añadimos a la tabla de simbolos
                                     TablaDeSimbolos unRegistro = new TablaDeSimbolos();
-                                    unRegistro.Nombre = strIDEN;
-                                    unRegistro.NumIdentificador = conteoIDEN;
+                                    unRegistro.Nombre = strIDV;
+                                    unRegistro.NumIdentificador = conteoIDV;
                                     tablaDeSimbolos.Add(unRegistro);
                                 }
-                                //limpiamos variable que guarda nombre de IDEN
-                                strIDEN = "";
+                                // Limpiamos variable que guarda nombre de IDV
+                                strIDV = "";
                             }
 
 
-                            //agrega a la linea de TOKEN que actualmente se encuentra
+                            // Agrega a la linea de TOKEN que actualmente se encuentra
                             string tokenAnterior = listaTokens[iteracion].NombreTOKEN;
                             listaTokens[iteracion].NombreTOKEN = tokenAnterior + " " + unToken1.NombreTOKEN;
-                            //volvemos a reiniciar estados
+                            // Volvemos a reiniciar estados
                             intEstadoActual = 0; intEstadoSiguiente = 0;
-                            bandera = false; banderaIDEN = false;
+                            bandera = false; banderaIDV = false;
                             break;
                         }
                         iteracion++;
                     }
 
-                    //se ejecutara este codigo si el token se añade en nueva linea de codigo
+                    // Se ejecutara este codigo si el token se añade en nueva linea de codigo
                     if (bandera)
                     {
                         Token unToken = new Token();
@@ -377,47 +372,44 @@ namespace RecorridoMatriz
                             }
                         }
 
-                        //verificamos si se trata de un identificador
+                        // Verificamos si se trata de un identificador
                         bool yaExiste = false;
                         if (unToken.NombreTOKEN == "IDV")
                         {
-                            //buscamos en la tabla de simbolos si ya existe un IDEN con el mismo nombre
+                            // Buscamos en la tabla de simbolos si ya existe un IDV con el mismo nombre
                             BusquedaEnLaTablaDeSimbolos(ref yaExiste);
 
-                            //si ya existe IDEN...
+                            // Si ya existe IDV...
                             if (yaExiste)
                             {
-                                //agregamos al archivo con TOKEN ya existente
+                                // Agregamos al archivo con TOKEN ya existente
                                 unToken.NombreTOKEN = unToken.NombreTOKEN + numIdentificador;
                             }
-                            //sino, se enumera TOKEN y añadimos IDEN a tabla de simbolos
+                            // Sino, se enumera TOKEN y añadimos IDV a tabla de simbolos
                             else
                             {
-                                int conteoIDEN = 0;
-                                //buscamos si ya existe algún IDEN para ENUMERARLO
-                                ConteoDeTablaDeSimbolos(ref conteoIDEN);
+                                int conteoIDV = 0;
+                                // Buscamos si ya existe algún IDV para ENUMERARLO
+                                ConteoDeTablaDeSimbolos(ref conteoIDV);
 
-                                conteoIDEN = conteoIDEN + 1;
-                                unToken.NombreTOKEN = unToken.NombreTOKEN + conteoIDEN;
+                                conteoIDV = conteoIDV + 1;
+                                unToken.NombreTOKEN = unToken.NombreTOKEN + conteoIDV;
 
-                                //añadimos a la tabla de simbolos
+                                // Añadimos a la tabla de simbolos
                                 TablaDeSimbolos unRegistro = new TablaDeSimbolos();
-                                unRegistro.Nombre = strIDEN;
-                                unRegistro.NumIdentificador = conteoIDEN;
+                                unRegistro.Nombre = strIDV;
+                                unRegistro.NumIdentificador = conteoIDV;
                                 tablaDeSimbolos.Add(unRegistro);
                             }
-                            //limpiamos variable que guarda nombre de IDEN
-                            strIDEN = "";
+                            // Limpiamos variable que guarda nombre de IDV
+                            strIDV = "";
                         }
                         unToken.NumLinea = numLinea;
                         listaTokens.Add(unToken);
 
-                        /*MessageBox.Show(_matriz[intEstadoActual, intColumna]);
-                        MessageBox.Show("Estado: " + intEstadoActual);*/
-
-                        //volvemos a reiniciar estados
+                        // Volvemos a reiniciar estados
                         intEstadoActual = 0; intEstadoSiguiente = 0;
-                        banderaIDEN = false;
+                        banderaIDV = false;
                         break;
                     }
                 }
@@ -425,19 +417,19 @@ namespace RecorridoMatriz
             }
         }
 
-        //metodo de busqueda en la tabla de simbolos y asignacion de nuevos valores
+        // Metodo de busqueda en la tabla de simbolos y asignacion de nuevos valores
         void BusquedaEnLaTablaDeSimbolos(ref bool yaExiste)
         {
             foreach (TablaDeSimbolos tablaDeSimbolos in tablaDeSimbolos)
             {
-                if (tablaDeSimbolos.Nombre == strIDEN)
+                if (tablaDeSimbolos.Nombre == strIDV)
                 {
                     yaExiste = true;
                     numIdentificador = tablaDeSimbolos.NumIdentificador;
                 }
             }
         }
-        void ConteoDeTablaDeSimbolos(ref int conteoIDEN)
+        void ConteoDeTablaDeSimbolos(ref int conteoIDV)
         {
             foreach (TablaDeSimbolos registros in tablaDeSimbolos)
             {
@@ -445,20 +437,19 @@ namespace RecorridoMatriz
                 {
                     break;
                 }
-                conteoIDEN++;
+                conteoIDV++;
             }
         }
 
-        //metodo para recuperacion de errores
+        // Metodo para recuperacion de errores
         void ElementosNoValidos(ref int intColumna)
         {
             Error unError = new Error();
             unError.NombreDeError = _matriz[intEstadoActual, intColumna];
-            //para un caso especial...
             string extraerNumero = Regex.Match(unError.NombreDeError, @"\d+").Value;
             if (extraerNumero != "")
             {
-                unError.NombreDeError = _matriz[int.Parse(extraerNumero), 63];
+                unError.NombreDeError = _matriz[int.Parse(extraerNumero), 60];
                 unError.NLinea = numLinea + 1;
             }
             else
@@ -468,25 +459,22 @@ namespace RecorridoMatriz
                 unError.NLinea = numLinea + 1;
                 unError.NombreDeError = _matriz[intEstadoActual, intColumnaError];
             }
-            //añade palabra erronea a la lista
+            // Añade palabra erronea a la lista
             listaPalabrasErroneas.Add(strPalabra);
             listaErrores.Add(unError);
             ActualizarListaErrores();
             strPalabra = "";
-            strIDEN = "";
+            strIDV = "";
         }
         void CambiarColor()
         {
-            //camnbia color en el código
+            // Cambia color en el código
             foreach (string s in listaPalabrasErroneas)
             {
-                //MessageBox.Show(s);
                 Utility.CambiarColor(rtxbSentencias, s, Color.Red);
             }
 
-            
-
-            //cambiar color en los TOKENS
+            // Cambiar color en los TOKENS
             Utility.CambiarColor(rtxbTokens, "ERROR", Color.Red);
         }
 
@@ -494,15 +482,15 @@ namespace RecorridoMatriz
         {
             rtxbSentencias.SelectionBackColor = Color.FromArgb(9, 17, 59);
             ActualizarLineasDeCodigo();
-            //codigo para restablecer color normal de codigo
+            // Codigo para restablecer color normal de codigo
             string strTexto = rtxbSentencias.Text;
             foreach (string s1 in listaPalabrasErroneas)
             {
                 strTexto.Replace(s1, string.Empty);
             }
-            Utility.CambiarColor(rtxbSentencias, strTexto, Color.FromArgb(128, 255, 255));
+            Utility.CambiarColor(rtxbSentencias, strTexto, Color.FromArgb(0,0,0));
             CambiarColor();
-            rtxbSentencias.SelectionBackColor = Color.FromArgb(9, 17, 59);
+            rtxbSentencias.SelectionBackColor = Color.DimGray;
         }
 
         private void ActualizarLineasDeCodigo()
@@ -570,28 +558,27 @@ namespace RecorridoMatriz
 
         private void btnEjecutar_Click(object sender, EventArgs e)
         {
-            //generar matriz
+            // Generar matriz
             GenerarMatriz();
 
-            //limpiar listas
+            // Limpiar listas
             listaTokens.Clear(); listaErrores.Clear(); tablaDeSimbolos.Clear(); listaPalabrasErroneas.Clear();
 
+            banderaIDV = false;
 
-            banderaIDEN = false;
-
-            //empieza recorrido de lineas de codigo
+            // Empieza recorrido de lineas de codigo
             LecturaDeCadena();
 
-            //se actualiza rtxb para archivo token
+            // Se actualiza rtxb para archivo token
             ActualizarTOKENS();
 
-            //se actualiza tabla de simbolos
+            // Se actualiza tabla de simbolos
             ActualizarTablaDeSimbolos();
 
-            //se actualiza la lista de errores
+            // Se actualiza la lista de errores
             ActualizarListaErrores();
 
-            //cambiamos color de errores en codigo
+            // Cambiamos color de errores en codigo
             CambiarColor();
         }
 
